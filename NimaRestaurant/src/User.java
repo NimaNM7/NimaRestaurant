@@ -32,7 +32,6 @@ public class User
     {
         return money;
     }
-
     public void loseMoney(int amount)
     {
         money-=amount;

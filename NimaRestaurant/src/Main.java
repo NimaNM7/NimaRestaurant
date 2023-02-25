@@ -35,6 +35,7 @@ public class Main
     }
 
     public static void main(String[] args) {
+        boolean isLogged = false;
         //Initalizing the foods
         Random rand = new Random();
         Things Flour = new Things("Floor", rand.nextInt(10), 10000);
@@ -94,12 +95,10 @@ public class Main
         ourUsers.add(admin); //Adding the manager at first place
         System.out.println("hello welcome to NimaNM7 restaurant");
         int number = 0;
-        int counter = 0;
         //getting input and writing the help section
         outer:
         while(number != -1) {
-            counter++;
-            if(counter == 1 || nowUser.isCustomer())
+            if(!isLogged || nowUser.isCustomer())
                 System.out.println("\nLogin : 1\nRegister : 2\nOrder : 3\nAccount Info : 4\nChange info : 5\nExit : -1");
             else
                 System.out.println("\nLogin : 1\nRegister : 2\nOrder : 3\nAccount Info : 4\nChange info : 5\nCheck Storage : 6\nCheck Prices : 7\nChange Prices : 8\nAdd Manager : 9\nExit : -1");
@@ -118,6 +117,7 @@ public class Main
                         if (ourUsers.get(i).getPassword().equals(personPassword)) {
                             System.out.println("your logged in dear " + personName + " . I hope you enjoy."); //Success
                             nowUser = ourUsers.get(i);
+                            isLogged = true;
                             flag = 1;
                         } else {
                             System.out.println("your password is incorrect. Please try again!"); //Incorrect Password
@@ -151,12 +151,18 @@ public class Main
                 ourUsers.add(newUser);
                 nowUser = newUser;
                 System.out.println("Congratulations. you registered successfully!"); //Success
+                isLogged = true;
                 numberOfCostumers++;
             }
 
             //Ordering (the most important part)
             if(number == 3)
             {
+                //if user hasn't logged in yet
+                if(!isLogged){
+                    System.out.println("you need to log in to do that");
+                    continue;
+                }
                 ArrayList<Product> pros = new ArrayList<>();
 
                 while(nowUser.isCustomer()) {
@@ -230,12 +236,20 @@ public class Main
             //Checking the profile
             if (number == 4)
             {
+                if(!isLogged){
+                    System.out.println("you need to log in to do that");
+                    continue;
+                }
                 nowUser.info();
             }
 
             //Changing the profile
             if(number == 5)
             {
+                if(!isLogged){
+                    System.out.println("you need to log in to do that");
+                    continue;
+                }
                 //Privacy check (checking if the user knows the current password to give him access)
                 System.out.println("input your current password");
                 personPassword = input.nextLine();
@@ -255,7 +269,7 @@ public class Main
             }
 
             //Checking the storage (just for managers)
-            if(number == 6 && !nowUser.isCustomer())
+            if(number == 6 && isLogged &&!nowUser.isCustomer())
             {
                 addToleftList(ingres); //updating the hashmap
                 for(Things a : thingsLeft.keySet())
@@ -266,7 +280,7 @@ public class Main
 
             //Checking the prices (just for managers)
             String foodname;
-            if(number == 7 && !nowUser.isCustomer())
+            if(number == 7 && isLogged && !nowUser.isCustomer())
             {
                 addToMenu(allFoods); //updating the hashmap
                 System.out.println("What food's price do you want to see? (write all if you want to see the whole menu)");
@@ -289,7 +303,7 @@ public class Main
             }
 
             //Changing the prices (just for managers)
-            if(number == 8 && !nowUser.isCustomer())
+            if(number == 8 && isLogged && !nowUser.isCustomer())
             {
                 System.out.println("What food's price do you want to change?");
                 foodname = input.nextLine();
@@ -308,7 +322,7 @@ public class Main
             }
 
             //Adding another manager (just for managers)
-            if(number == 9 && !nowUser.isCustomer())
+            if(number == 9 && isLogged && !nowUser.isCustomer())
             {
                 System.out.println("input your name");
                 personName = input.nextLine();
